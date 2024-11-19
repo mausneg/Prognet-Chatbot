@@ -2,7 +2,7 @@ import json
 import pandas as pd  
 import os
 
-with open('chatbot/data/intents.json') as f:
+with open('machine-learning/data/intents.json') as f:
     data = json.load(f)
 
 patterns = []
@@ -18,4 +18,4 @@ for intent in data['intents']:
 unique_tags = list(set(tags))
 print("Total unique tags: ", len(unique_tags))
 df = pd.DataFrame({'patterns': patterns, 'tags': tags, 'responses': responses})
-df.to_csv('chatbot/data/intents.csv', index=False)
+df.to_csv('machine-learning/data/final/intents.csv', index=False)
