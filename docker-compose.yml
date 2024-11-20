@@ -1,0 +1,19 @@
+version: '3.7'
+
+services:
+  tf_serving:
+    image: tensorflow/serving:latest
+    ports:
+      - 8501:8501
+    volumes:
+      - ./machine-learning/serving_model_dir:/models/chatbot-psti-model
+    environment:
+      MODEL_NAME: chatbot-psti-model
+
+  flask_app:
+    build:
+      context: .
+    ports:
+      - 5000:5000
+    depends_on:
+      - tf_serving
