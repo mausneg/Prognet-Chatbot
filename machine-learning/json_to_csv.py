@@ -17,5 +17,8 @@ for intent in data['intents']:
 
 unique_tags = list(set(tags))
 print("Total unique tags: ", len(unique_tags))
+
 df = pd.DataFrame({'patterns': patterns, 'tags': tags, 'responses': responses})
+print("Tag value counts:\n", df['tags'].value_counts())
+
 df.to_csv('machine-learning/data/final/intents.csv', index=False)
