@@ -94,7 +94,7 @@ def tuner_fn(fn_args: FnArgs):
         project_name='chatbot',
     )
 
-    tuner.oracle.max_trials = 20
+    tuner.oracle.max_trials = 10
 
     return TunerFnResult(
         tuner=tuner,

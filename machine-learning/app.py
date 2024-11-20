@@ -68,12 +68,11 @@ model_resolver = Resolver(
 ).with_id('Latest_blessed_model_resolver')
 
 eval_config = tfma.EvalConfig(
-    model_specs=[tfma.ModelSpec(label_key='tags')],
+    model_specs=[tfma.ModelSpec(label_key='tags_xf')],
     slicing_specs=[tfma.SlicingSpec()],
     metrics_specs=[
         tfma.MetricsSpec(metrics=[
             tfma.MetricConfig(class_name='ExampleCount'),
-            tfma.MetricConfig(class_name='AUC'),
             tfma.MetricConfig(class_name='CategoricalAccuracy',
                 threshold=tfma.MetricThreshold(
                     value_threshold=tfma.GenericValueThreshold(
@@ -88,7 +87,7 @@ eval_config = tfma.EvalConfig(
 )
 
 evaluator = Evaluator(
-    examples=example_gen.outputs['examples'],
+    examples=transform.outputs['transformed_examples'],
     model=trainer.outputs['model'],
     baseline_model=model_resolver.outputs['model'],
     eval_config=eval_config
