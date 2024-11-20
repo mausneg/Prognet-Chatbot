@@ -1,3 +1,4 @@
+from flask import Flask, request, jsonify
 import pandas as pd
 import tensorflow as tf
 import requests
@@ -5,6 +6,8 @@ import json
 import base64
 import random
 import ast
+
+app = Flask(__name__)
 
 def prepare_json(text):
     feature_spec = {
@@ -29,17 +32,26 @@ def prepare_json(text):
 
 def predict(input):
     json_data = prepare_json(input)
-    endpoint = "http://localhost:8080/v1/models/chatbot-psti-model:predict"
+    endpoint = "http://localhost:8501/v1/models/chatbot-psti-model:predict"
     response = requests.post(endpoint, data=json_data)
-    print(response.json())
     prediction = response.json().get("predictions")
     prediction = tf.argmax(prediction[0]).numpy()
     return prediction
 
-if __name__ == "__main__":
+@app.route('/predict', methods=['POST'])
+def predict_route():
+    data = request.json
+    input_text = data.get('text')
+    prediction = predict(input_text)
     tags_to_responses = pd.read_csv('machine-learning/data/tags_to_responses.csv')
-    prediction = predict("apa itu kkn?")
     response = tags_to_responses[tags_to_responses['tags'].index+1 == prediction]['responses'].values[0]
     response = ast.literal_eval(response)
     response = random.choice(response)
-    print(response)
+    return jsonify({'prediction': response})
+
+@app.route('/')
+def home():
+    return "Hello, World!"
+
+if __name__ == "__main__":
+    app.run(host='0.0.0.0', port=5000, debug=True)

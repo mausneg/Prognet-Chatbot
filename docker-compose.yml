@@ -1,0 +1,19 @@
+version: '3.7'
+
+services:
+  tf_serving:
+    build:
+      context: .
+      dockerfile: Dockerfile.tf-serving
+    ports:
+      - 8501:8501
+
+
+  flask_app:
+    build:
+      context: .
+      dockerfile: Dockerfile.flask
+    ports:
+      - 5000:5000
+    depends_on:
+      - tf_serving

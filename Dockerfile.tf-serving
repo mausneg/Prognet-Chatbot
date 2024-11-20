@@ -1,4 +1,4 @@
 FROM tensorflow/serving:latest
  
-COPY ./serving_model_dir /models
+COPY ./machine-learning/serving_model_dir /models
 ENV MODEL_NAME=chatbot-psti-model
