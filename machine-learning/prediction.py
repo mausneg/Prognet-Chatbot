@@ -6,6 +6,7 @@ import json
 import base64
 import random
 import ast
+import time
 
 app = Flask(__name__)
 
@@ -30,9 +31,10 @@ def prepare_json(text):
         "instances": result
     })
 
+
 def predict(input):
     json_data = prepare_json(input)
-    endpoint = "http://localhost:8501/v1/models/chatbot-psti-model:predict"
+    endpoint = "http://tf_serving:8501/v1/models/chatbot-psti-model:predict"
     response = requests.post(endpoint, data=json_data)
     prediction = response.json().get("predictions")
     prediction = tf.argmax(prediction[0]).numpy()
@@ -42,6 +44,7 @@ def predict(input):
 def predict_route():
     data = request.json
     input_text = data.get('text')
+    print("Input text: ", input_text)
     prediction = predict(input_text)
     tags_to_responses = pd.read_csv('machine-learning/data/tags_to_responses.csv')
     response = tags_to_responses[tags_to_responses['tags'].index+1 == prediction]['responses'].values[0]
