@@ -15,7 +15,7 @@ PIPELINE_NAME = 'chatbot_pipeline'
 SCHEMA_PIPELINE_NAME = 'chatbot_schema_pipeline'
 PIPELINE_ROOT = os.path.abspath(os.path.join('machine-learning','pipelines', PIPELINE_NAME))
 METADATA_PATH = os.path.abspath(os.path.join('machine-learning','metadata', PIPELINE_NAME, 'metadata.db'))
-SERVING_MODEL_DIR = os.path.abspath(os.path.join('machine-learning','serving_model', PIPELINE_NAME))
+SERVING_MODEL_DIR = os.path.abspath(os.path.join('machine-learning','serving_model_dir', 'chatbot-psti-model'))
 DATA_ROOT = os.path.abspath(os.path.join('machine-learning', 'data', 'final'))
 
 output = example_gen_pb2.Output(
