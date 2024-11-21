@@ -4,13 +4,16 @@
 
 package com.prognet.chatbot;
 
+import com.prognet.chatbot.Controller.LoginController;
+import com.prognet.chatbot.View.Login;
+
 /**
  *
  * @author mausneg
  */
-public class PrognetChatbot {
+public class App {
 
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+        new LoginController();
     }
 }
