@@ -4,6 +4,7 @@
 
 package com.prognet.chatbot;
 
+import com.prognet.chatbot.Controller.ChatbotClientsController;
 import com.prognet.chatbot.Controller.LoginController;
 import com.prognet.chatbot.View.Login;
 
@@ -14,6 +15,6 @@ import com.prognet.chatbot.View.Login;
 public class App {
 
     public static void main(String[] args) {
-        new LoginController();
+        new ChatbotClientsController();
     }
 }
