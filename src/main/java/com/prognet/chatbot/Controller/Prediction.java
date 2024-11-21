@@ -6,10 +6,10 @@ import java.net.URL;
 import java.util.Scanner;
 
 public class Prediction {
-    public static void main(String[] args) {
+
+    public String getPrediction(String inputText) {
         try {
             String url = "http://localhost:5000/predict";
-            String inputText = "PEMROGRAMAN INTERNET ITU APA?";
             String payload = "{\"text\": \"" + inputText + "\"}";
 
             URL obj = new URL(url);
@@ -36,9 +36,10 @@ public class Prediction {
             scanner.close();
 
             String responseValue = extractResponseValue(response);
-            System.out.println("Response: " + responseValue);
+            return responseValue;
         } catch (Exception e) {
             e.printStackTrace();
+            return "Error";
         }
     }
 

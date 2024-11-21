@@ -5,9 +5,6 @@
 package com.prognet.chatbot;
 
 import com.prognet.chatbot.Controller.ChatbotClientsController;
-import com.prognet.chatbot.Controller.LoginController;
-import com.prognet.chatbot.View.Login;
-
 /**
  *
  * @author mausneg
