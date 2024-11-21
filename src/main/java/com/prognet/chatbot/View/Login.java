@@ -153,7 +153,17 @@ public class Login extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+        String username = jTextField1.getText();
+        String password = String.valueOf(jPasswordField1.getPassword());
+        if (loginController.login(username, password)) {
+            JOptionPane.showMessageDialog(this, "Login Success!", "Success", JOptionPane.INFORMATION_MESSAGE);
+            // new ChatbotClients(loginController.getUsername(username)).setVisible(true);
+            // this.dispose();
+            
+            
+        } else {
+            JOptionPane.showMessageDialog( this, "Login Failed!", "Warning", JOptionPane.WARNING_MESSAGE);
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
