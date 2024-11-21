@@ -1,20 +1,32 @@
 package com.prognet.chatbot.Controller;
 
+import com.prognet.chatbot.View.ChatCardBot;
+import com.prognet.chatbot.View.ChatCardClient;
 import com.prognet.chatbot.View.ChatbotClients;
-import com.prognet.chatbot.View.ChatCard;
+
 
 public class ChatbotClientsController {
     private ChatbotClients chatbotClients;
-    private ChatCard chatCard;
+    private Prediction prediction;
     public ChatbotClientsController(){
         chatbotClients = new ChatbotClients(this);
         chatbotClients.setVisible(true);
+        prediction = new Prediction();
         displayData();
     }
 
-    private void displayDataCard(String messageClient, String timeClient, String messageBot, String timeBot){
-        this.chatCard = new ChatCard(messageClient, timeClient, messageBot, timeBot); 
-        this.chatbotClients.addChatCard(chatCard);  
+    public String getPrediction(String text){
+        return prediction.getPrediction(text);
+    }
+    
+    public void displayChatCardClient(String message, String time){
+        ChatCardClient chatCardClient = new ChatCardClient(message, time);
+        chatbotClients.addChatCardClient(chatCardClient);
+    }
+
+    public void displayChatCardBot(String message, String time){
+        ChatCardBot chatCardBot = new ChatCardBot(message, time);
+        chatbotClients.addChatCardBot(chatCardBot);
     }
 
     public void displayData(){
@@ -24,7 +36,8 @@ public class ChatbotClientsController {
         String [] timesBot = {"10:00", "10:05", "10:10", "10:15"};
 
         for (int i = 0; i < messagesClient.length; i++){
-            displayDataCard(messagesClient[i], timesClient[i], messagesBot[i], timesBot[i]);
+            displayChatCardClient(messagesClient[i], timesClient[i]);
+            displayChatCardBot(messagesBot[i], timesBot[i]);
         }
 
     }
