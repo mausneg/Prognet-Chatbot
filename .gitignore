@@ -1,3 +1,6 @@
 /target/
 .venv/
 *data
+*app.ipynb
+*pipelines
+*serving_model_dir
