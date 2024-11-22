@@ -42,6 +42,10 @@ public class Register extends javax.swing.JFrame {
         });
     }
 
+        public void showMessage(String message) {
+                JOptionPane.showMessageDialog(this, message, "Info", JOptionPane.INFORMATION_MESSAGE);
+        }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -196,15 +200,8 @@ public class Register extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Corect your input!", "Warning", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        if (registerController.register(username, password)) {
-            JOptionPane.showMessageDialog(this, "Username already exists!", "Warning", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        JOptionPane.showMessageDialog(this, "Register Success!", "Success", JOptionPane.INFORMATION_MESSAGE);
-        new Login(new LoginController()).setVisible(true);
-        this.dispose();
-
-
+      
+        registerController.register(username, password);
     }// GEN-LAST:event_jButton1ActionPerformed
 
     /**

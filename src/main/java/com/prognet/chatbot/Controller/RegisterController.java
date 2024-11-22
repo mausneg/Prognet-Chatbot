@@ -1,23 +1,56 @@
 package com.prognet.chatbot.Controller;
 
-import com.prognet.chatbot.Database.Core.DatabaseManager;
+import com.prognet.chatbot.Client.SocketManager;
+import com.prognet.chatbot.Client.Config.Config;
 import com.prognet.chatbot.View.Register;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 public class RegisterController {
-    private String username;
-    private String password;
     private Register register;
-    private DatabaseManager dbManager;
+    private SocketManager socketManager;
 
     public RegisterController() {
         this.register = new Register(this);
-        this.dbManager = new DatabaseManager();
-        register.setVisible(true);
+        this.register.setVisible(true);
+        this.socketManager = SocketManager.getInstance();
     }
 
-    public boolean register(String username, String password) {
-        this.username = username;
-        this.password = password;
-        return dbManager.register(username, password);
+    private String encryptPassword(String password) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] hash = md.digest(password.getBytes());
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : hash) {
+                String hex = Integer.toHexString(0xff & b);
+                if (hex.length() == 1) hexString.append('0');
+                hexString.append(hex);
+            }
+            return hexString.toString();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public void register(String username, String password) {
+        String encryptedPassword = encryptPassword(password);
+        String message = String.format("{\"action\": \"register\", \"username\": \"%s\", \"password\": \"%s\"}", username, encryptedPassword);
+        socketManager.send(message);
+
+        String response = socketManager.receive();
+        System.out.println("Response from server: " + response);
+
+        if (response.contains("\"status\": \"success\"")) {
+            this.register.showMessage("User registered successfully");
+            new LoginController();
+        } else {
+            this.register.showMessage("User registration failed");
+        }
+    }
+
+    public void close() {
+        socketManager.close();
     }
 }

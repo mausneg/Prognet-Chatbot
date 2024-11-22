@@ -2,14 +2,14 @@ package com.prognet.chatbot.Controller;
 
 import com.prognet.chatbot.View.ChatCardBot;
 import com.prognet.chatbot.View.ChatCardClient;
-import com.prognet.chatbot.View.ChatbotClients;
+import com.prognet.chatbot.View.Chatbot;
 
 
-public class ChatbotClientsController {
-    private ChatbotClients chatbotClients;
+public class ChatbotController {
+    private Chatbot chatbotClients;
     private Prediction prediction;
-    public ChatbotClientsController(){
-        chatbotClients = new ChatbotClients(this);
+    public ChatbotController(){
+        chatbotClients = new Chatbot(this);
         chatbotClients.setVisible(true);
         prediction = new Prediction();
         displayData();
