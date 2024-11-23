@@ -40,12 +40,12 @@ public class ChatbotController {
 
     }
 
-    public String getPrediction(String message){
+    public String getPrediction(String message) {
         String response = "";
         String messageJson = String.format("{\"action\": \"predict\", \"message\": \"%s\"}", message);
         socketManager.send(messageJson);
         response = socketManager.receive();
-        response = response.split("\"prediction\": \"")[1];
+        response = response.split("\"prediction\": \"")[1].split("\"")[0];
         return response;
     }
 
@@ -54,14 +54,13 @@ public class ChatbotController {
     }
 
     public void insertChat(String clientMessage, String botMessage, LocalDateTime clientTime, LocalDateTime botTime){
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String clientTimeString = clientTime.format(formatter);
-        String botTimeString = botTime.format(formatter);
-        String message = String.format("{\"action\": \"chat\", \"history_id\": \"%s\",\"userId\": \"%s\", \"clientMessage\": \"%s\", \"botMessage\": \"%s\", \"clientTime\": \"%s\", \"botTime\": \"%s\"}", this.historyId, this.userId, clientMessage, botMessage, clientTimeString, botTimeString);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm-ss");
+        String message = String.format("{\"action\": \"chat\", \"user_id\": \"%s\", \"history_id\": \"%s\", \"clientMessage\": \"%s\", \"botMessage\": \"%s\", \"clientTime\": \"%s\", \"botTime\": \"%s\"}",
+                this.userId, this.historyId, clientMessage, botMessage, clientTime.format(formatter), botTime.format(formatter));
         socketManager.send(message);
         String response = socketManager.receive();
         if (historyId == -1)
-            this.historyId = Integer.parseInt(response.split("\"historyId\": \"")[1]);
+            this.historyId = Integer.parseInt(response.split("\"history_id\": \"")[1].split("\"")[0]);
 
     }
 

@@ -18,22 +18,25 @@ public class DatabaseManager {
         }
     }
 
-    public static DatabaseManager getInstance(){
-        try{
-            if (instance == null) {
+    public static DatabaseManager getInstance() {
+        if (instance == null) {
+            try {
                 instance = new DatabaseManager();
-            } else if (instance.getConnection().isClosed()) {
-                instance = new DatabaseManager();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            return instance;
         }
-        catch (SQLException e){
-            e.printStackTrace();
-            return null;
-        }
+        return instance;
     }
 
     public Connection getConnection() {
+        try {
+            if (connection == null || connection.isClosed()) {
+                connection = DriverManager.getConnection("jdbc:mysql://" + Config.DB_HOST + ":" + Config.DB_PORT + "/" + Config.DB_NAME, Config.DB_USER, Config.DB_PASS);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return connection;
     }
 
