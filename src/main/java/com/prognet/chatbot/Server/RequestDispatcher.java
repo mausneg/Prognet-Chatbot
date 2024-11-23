@@ -2,6 +2,8 @@ package com.prognet.chatbot.Server;
 
 import java.util.Map;
 import com.prognet.chatbot.Database.models.Users;
+import com.prognet.chatbot.Database.models.Histories;
+import com.prognet.chatbot.Database.models.Chats;
 
 public class RequestDispatcher {
 
@@ -18,20 +20,33 @@ public class RequestDispatcher {
             }
         } else if ("login".equals(action)) {
             Users user = new Users(request.get("username"), request.get("password"));
-            if (user.login()) {
-                response = "{\"status\": \"success\", \"message\": \"User logged in successfully.\"}";
+            int userId = user.login();
+            if (userId != -1) {
+                response = "{\"status\": \"success\", \"message\": \"Login successful.\", \"user_id\": \"" + userId + "\"}";
             } else {
-                response = "{\"status\": \"error\", \"message\": \"User login failed.\"}";
+                response = "{\"status\": \"error\", \"message\": \"Login failed.\"}";
             }
         } else if ("predict".equals(action)) {
             Prediction prediction = new Prediction();
             String predictionResponse = prediction.getPrediction(request.get("message"));
             response = "{\"status\": \"success\", \"message\": \"Prediction successful.\", \"prediction\": \"" + predictionResponse + "\"}";
-        } else if ("get_id".equals(action)) {
-            Users user = new Users(request.get("username"), "");
-            String id = user.getId();
-            response = "{\"status\": \"success\", \"message\": \"ID retrieved successfully.\", \"id\": \"" + id + "\"}";
-        } else {
+        } else if("chat".equals(action)){
+            Histories history = new Histories();
+            int historyId = Integer.parseInt(request.get("history_id"));
+            if (historyId == -1){
+                historyId = history.insertHistory(Integer.parseInt(request.get("userId")));
+            }
+            history.updateHistory(historyId);
+            Chats chat = new Chats(historyId, request.get("clientMessage"), request.get("botMessage"), request.get("clientTime"), request.get("botTime"));
+            if (chat.insertChat()){
+                response = "{\"status\": \"success\", \"message\": \"Chat inserted successfully.\"}";
+            } else {
+                response = "{\"status\": \"error\", \"message\": \"Chat insertion failed.\"}";
+            }
+
+        }
+        
+        else {
             response = "{\"status\": \"error\", \"message\": \"Unknown action.\"}";
         }
 
