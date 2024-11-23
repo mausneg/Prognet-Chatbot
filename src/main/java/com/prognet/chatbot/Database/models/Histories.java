@@ -42,7 +42,7 @@ public class Histories {
 
     public void updateHistory(int historyId) {
         this.lastUpdated = LocalDateTime.now();
-        String query = "UPDATE histories SET last_updated = ? WHERE id = ?";
+        String query = "UPDATE histories SET last_updated = ? WHERE history_id = ?";
         try (Connection connection = dbManager.getConnection();
              PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setTimestamp(1, Timestamp.valueOf(this.lastUpdated));

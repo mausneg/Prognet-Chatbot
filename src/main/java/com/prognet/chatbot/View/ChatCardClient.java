@@ -33,7 +33,7 @@ public class ChatCardClient extends javax.swing.JPanel {
         jLabel5 = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(219, 234, 254));
-        setMaximumSize(new java.awt.Dimension(400, 64));
+        setMaximumSize(new java.awt.Dimension(500, 64));
         setPreferredSize(new java.awt.Dimension(400, 64));
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
