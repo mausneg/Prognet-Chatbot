@@ -44,10 +44,7 @@ public class LoginController {
 
         if (response.contains("\"status\": \"success\"")) {
             this.login.showMessage("Login successful");
-            String messageJson = String.format("{\"action\": \"get_id\", \"username\": \"%s\"}", username);
-            socketManager.send(messageJson);
-            String idResponse = socketManager.receive();
-            String id = idResponse.split("\"id\": \"")[1].split("\"}")[0];
+            int id = Integer.parseInt(response.split("\"user_id\": \"")[1].split("\"")[0]);
             new ChatbotController(id);
             this.login.dispose();
         } else {
