@@ -1,5 +1,6 @@
 package com.prognet.chatbot.Controller;
 
+import com.prognet.chatbot.Client.SocketManager;
 import com.prognet.chatbot.View.ChatCardBot;
 import com.prognet.chatbot.View.ChatCardClient;
 import com.prognet.chatbot.View.Chatbot;
@@ -7,18 +8,18 @@ import com.prognet.chatbot.View.Chatbot;
 
 public class ChatbotController {
     private Chatbot chatbotClients;
-    private Prediction prediction;
-    public ChatbotController(){
-        chatbotClients = new Chatbot(this);
-        chatbotClients.setVisible(true);
-        prediction = new Prediction();
-        displayData();
+    private String userId;
+    private SocketManager socketManager;
+    private int historyId;
+    public ChatbotController(String userId){
+        this.historyId = -1;
+        this.socketManager = SocketManager.getInstance();
+        this.userId = userId;
+        this.chatbotClients = new Chatbot(this);
+        this.chatbotClients.setVisible(true);
+        displayHistories();
     }
 
-    public String getPrediction(String text){
-        return prediction.getPrediction(text);
-    }
-    
     public void displayChatCardClient(String message, String time){
         ChatCardClient chatCardClient = new ChatCardClient(message, time);
         chatbotClients.addChatCardClient(chatCardClient);
@@ -29,16 +30,28 @@ public class ChatbotController {
         chatbotClients.addChatCardBot(chatCardBot);
     }
 
-    public void displayData(){
-        String [] messagesClient = {"Hello", "Hi", "How are you?", "I'm good"};
-        String [] timesClient = {"10:00", "10:05", "10:10", "10:15"};
-        String [] messagesBot = {"Hello", "Hi", "I'm good", "What's up?"};
-        String [] timesBot = {"10:00", "10:05", "10:10", "10:15"};
+    public void displayHistories(){
+        String message = String.format("{\"action\": \"history\", \"userId\": \"%s\"}", this.userId);
+        SocketManager.getInstance().send(message);
+        String response = socketManager.receive();
 
-        for (int i = 0; i < messagesClient.length; i++){
-            displayChatCardClient(messagesClient[i], timesClient[i]);
-            displayChatCardBot(messagesBot[i], timesBot[i]);
-        }
+    }
+
+    public String getPrediction(String message){
+        String response = "";
+        String messageJson = String.format("{\"action\": \"predict\", \"message\": \"%s\"}", message);
+        socketManager.send(messageJson);
+        response = socketManager.receive();
+        response = response.split("\"prediction\": \"")[1];
+        return response;
+    }
+
+    public void setHistoryId(int historyId){
+        this.historyId = historyId;
+    }
+
+    public void insertChat(String clientMessage, String botMessage, String clientTime, String botTime){
+        
 
     }
 

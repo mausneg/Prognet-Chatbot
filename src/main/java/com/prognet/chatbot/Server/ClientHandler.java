@@ -5,14 +5,16 @@ import java.net.*;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.prognet.chatbot.Database.models.User;
+import com.prognet.chatbot.Database.models.Users;
 
 public class ClientHandler implements Runnable {
     private Socket clientSocket;
     private static int clientCount = 0;
+    private RequestDispatcher requestDispatcher;
 
     public ClientHandler(Socket socket) {
         this.clientSocket = socket;
+        requestDispatcher = new RequestDispatcher();
         clientCount++;
         System.out.println("Client connected: " + clientSocket.getInetAddress().getHostAddress());
         System.out.println("Client count: " + clientCount);
@@ -29,33 +31,8 @@ public class ClientHandler implements Runnable {
                 System.out.println("Received JSON: " + line);
 
                 Map<String, String> request = parseJson(line);
-                String action = request.get("action");
-
-                String response;
-                switch (action) {
-                    case "register":
-                        User user = new User(request.get("username"), request.get("password"));
-                        if (user.register()) {
-                            response = "{\"status\": \"success\", \"message\": \"User registered successfully.\"}";
-                        } else {
-                            response = "{\"status\": \"error\", \"message\": \"User registration failed.\"}";
-                        }
-                        break;
-                    case "login":
-                        user = new User(request.get("username"), request.get("password"));
-                        if (user.login()) {
-                            response = "{\"status\": \"success\", \"message\": \"User logged in successfully.\"}";
-                        } else {
-                            response = "{\"status\": \"error\", \"message\": \"User login failed.\"}";
-                        }
-                        break;
-                    case "chat":
-                        response = "{\"status\": \"success\", \"message\": \"Chat message received.\"}";
-                        break;
-                    default:
-                        response = "{\"status\": \"error\", \"message\": \"Unknown action.\"}";
-                        break;
-                }
+                String response = requestDispatcher.dispatch(request);
+                
                 System.out.println("Sending JSON: " + response);
                 out.println(response);
                 out.flush();
