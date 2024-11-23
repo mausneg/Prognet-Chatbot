@@ -1,4 +1,4 @@
-package com.prognet.chatbot.Controller;
+package com.prognet.chatbot.Server;
 
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -22,7 +22,6 @@ public class Prediction {
             os.write(payload.getBytes());
             os.flush();
             os.close();
-
             int responseCode = con.getResponseCode();
             System.out.println("Status Code: " + responseCode);
 
