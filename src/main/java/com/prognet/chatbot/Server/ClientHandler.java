@@ -14,6 +14,8 @@ public class ClientHandler implements Runnable {
     public ClientHandler(Socket socket) {
         this.clientSocket = socket;
         clientCount++;
+        System.out.println("Client connected: " + clientSocket.getInetAddress().getHostAddress());
+        System.out.println("Client count: " + clientCount);
     }
 
     @Override
@@ -59,6 +61,8 @@ public class ClientHandler implements Runnable {
                 out.flush();
             }
             clientCount--;
+            System.out.println("Client disconnected: " + clientSocket.getInetAddress().getHostAddress());
+            System.out.println("Client count: " + clientCount);
         } catch (IOException e) {
             e.printStackTrace();
         } finally {

@@ -12,11 +12,8 @@ public class ChatbotServer {
 
             while (true) {
                 Socket clientSocket = serverSocket.accept();
-                System.out.println("Client connected: " + clientSocket.getInetAddress().getHostAddress());
-
                 ClientHandler clientHandler = new ClientHandler(clientSocket);
                 new Thread(clientHandler).start();
-                System.out.println("Client count: " + ClientHandler.getClientCount());
             }
         } catch (IOException e) {
             e.printStackTrace();
