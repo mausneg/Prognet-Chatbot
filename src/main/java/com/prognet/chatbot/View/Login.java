@@ -37,10 +37,20 @@ public class Login extends javax.swing.JFrame {
 
             }
         });
+
+        this.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                loginController.close();
+            }
+        });
     }
     
     
 
+    public void showMessage(String message) {
+        JOptionPane.showMessageDialog(this, message, "Info", JOptionPane.INFORMATION_MESSAGE);
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -154,7 +164,12 @@ public class Login extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         String username = jTextField1.getText();
-        String password = String.valueOf(jPasswordField1.getPassword());
+        String password = new String(jPasswordField1.getPassword());
+        if (username.isEmpty() || password.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please fill all fields");
+        } else {
+            loginController.login(username, password);
+        }
       
     }//GEN-LAST:event_jButton1ActionPerformed
 

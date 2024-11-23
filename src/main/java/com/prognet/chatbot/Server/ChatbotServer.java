@@ -16,6 +16,7 @@ public class ChatbotServer {
 
                 ClientHandler clientHandler = new ClientHandler(clientSocket);
                 new Thread(clientHandler).start();
+                System.out.println("Client count: " + ClientHandler.getClientCount());
             }
         } catch (IOException e) {
             e.printStackTrace();

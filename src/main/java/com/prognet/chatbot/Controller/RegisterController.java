@@ -45,6 +45,7 @@ public class RegisterController {
         if (response.contains("\"status\": \"success\"")) {
             this.register.showMessage("User registered successfully");
             new LoginController();
+            this.register.dispose();
         } else {
             this.register.showMessage("User registration failed");
         }

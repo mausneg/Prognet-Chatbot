@@ -9,9 +9,11 @@ import com.prognet.chatbot.Database.models.User;
 
 public class ClientHandler implements Runnable {
     private Socket clientSocket;
+    private static int clientCount = 0;
 
     public ClientHandler(Socket socket) {
         this.clientSocket = socket;
+        clientCount++;
     }
 
     @Override
@@ -38,7 +40,12 @@ public class ClientHandler implements Runnable {
                         }
                         break;
                     case "login":
-                        response = "{\"status\": \"success\", \"message\": \"Login successful.\"}";
+                        user = new User(request.get("username"), request.get("password"));
+                        if (user.login()) {
+                            response = "{\"status\": \"success\", \"message\": \"User logged in successfully.\"}";
+                        } else {
+                            response = "{\"status\": \"error\", \"message\": \"User login failed.\"}";
+                        }
                         break;
                     case "chat":
                         response = "{\"status\": \"success\", \"message\": \"Chat message received.\"}";
@@ -47,10 +54,11 @@ public class ClientHandler implements Runnable {
                         response = "{\"status\": \"error\", \"message\": \"Unknown action.\"}";
                         break;
                 }
-
+                System.out.println("Sending JSON: " + response);
                 out.println(response);
                 out.flush();
             }
+            clientCount--;
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -62,7 +70,6 @@ public class ClientHandler implements Runnable {
         }
     }
 
-    // Function to parse JSON string into key-value pairs
     private Map<String, String> parseJson(String json) {
         Map<String, String> map = new HashMap<>();
         json = json.replace("{", "").replace("}", "").replace("\"", "");
@@ -74,5 +81,9 @@ public class ClientHandler implements Runnable {
             }
         }
         return map;
+    }
+
+    public static int getClientCount() {
+        return clientCount;
     }
 }

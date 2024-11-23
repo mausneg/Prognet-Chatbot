@@ -6,6 +6,8 @@ package com.prognet.chatbot.Client;
 
 import com.prognet.chatbot.Controller.ChatbotController;
 import com.prognet.chatbot.Controller.RegisterController;
+import com.prognet.chatbot.Controller.LoginController;
+
 /**
  *
  * @author mausneg
@@ -13,6 +15,6 @@ import com.prognet.chatbot.Controller.RegisterController;
 public class ChatbotClient {
 
     public static void main(String[] args) {
-        new RegisterController();
+        new LoginController();
     }
 }

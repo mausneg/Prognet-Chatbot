@@ -40,6 +40,13 @@ public class Register extends javax.swing.JFrame {
 
             }
         });
+
+        this.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                registerController.close();
+            }
+        });
     }
 
         public void showMessage(String message) {
@@ -182,6 +189,7 @@ public class Register extends javax.swing.JFrame {
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
+
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jTextField1ActionPerformed
         // TODO add your handling code here:
