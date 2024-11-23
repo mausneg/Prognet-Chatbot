@@ -7,18 +7,18 @@ package com.prognet.chatbot.View;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import com.prognet.chatbot.Controller.ChatbotClientsController;
+import com.prognet.chatbot.Controller.ChatbotController;
 
 /**
  *
  * @author Aldi Julian
  */
-public class ChatbotClients extends javax.swing.JFrame {
+public class Chatbot extends javax.swing.JFrame {
 
-    private ChatbotClientsController chatbotClientsController;
+    private ChatbotController chatbotClientsController;
     private ChatCardBot lastChatCardBot; 
 
-    public ChatbotClients(ChatbotClientsController chatbotClientsController) {
+    public Chatbot(ChatbotController chatbotClientsController) {
         initComponents();
         this.chatbotClientsController = chatbotClientsController;
         setLocationRelativeTo(null);

@@ -40,7 +40,18 @@ public class Register extends javax.swing.JFrame {
 
             }
         });
+
+        this.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                registerController.close();
+            }
+        });
     }
+
+        public void showMessage(String message) {
+                JOptionPane.showMessageDialog(this, message, "Info", JOptionPane.INFORMATION_MESSAGE);
+        }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -179,6 +190,7 @@ public class Register extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jTextField1ActionPerformed
         // TODO add your handling code here:
     }// GEN-LAST:event_jTextField1ActionPerformed
@@ -196,15 +208,8 @@ public class Register extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Corect your input!", "Warning", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        if (registerController.register(username, password)) {
-            JOptionPane.showMessageDialog(this, "Username already exists!", "Warning", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        JOptionPane.showMessageDialog(this, "Register Success!", "Success", JOptionPane.INFORMATION_MESSAGE);
-        new Login(new LoginController()).setVisible(true);
-        this.dispose();
-
-
+      
+        registerController.register(username, password);
     }// GEN-LAST:event_jButton1ActionPerformed
 
     /**
