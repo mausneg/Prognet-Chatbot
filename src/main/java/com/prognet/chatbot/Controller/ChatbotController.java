@@ -1,5 +1,8 @@
 package com.prognet.chatbot.Controller;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import com.prognet.chatbot.Client.SocketManager;
 import com.prognet.chatbot.View.ChatCardBot;
 import com.prognet.chatbot.View.ChatCardClient;
@@ -8,10 +11,10 @@ import com.prognet.chatbot.View.Chatbot;
 
 public class ChatbotController {
     private Chatbot chatbotClients;
-    private String userId;
+    private int userId;
     private SocketManager socketManager;
     private int historyId;
-    public ChatbotController(String userId){
+    public ChatbotController(int userId){
         this.historyId = -1;
         this.socketManager = SocketManager.getInstance();
         this.userId = userId;
@@ -50,8 +53,15 @@ public class ChatbotController {
         this.historyId = historyId;
     }
 
-    public void insertChat(String clientMessage, String botMessage, String clientTime, String botTime){
-        
+    public void insertChat(String clientMessage, String botMessage, LocalDateTime clientTime, LocalDateTime botTime){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String clientTimeString = clientTime.format(formatter);
+        String botTimeString = botTime.format(formatter);
+        String message = String.format("{\"action\": \"chat\", \"history_id\": \"%s\",\"userId\": \"%s\", \"clientMessage\": \"%s\", \"botMessage\": \"%s\", \"clientTime\": \"%s\", \"botTime\": \"%s\"}", this.historyId, this.userId, clientMessage, botMessage, clientTimeString, botTimeString);
+        socketManager.send(message);
+        String response = socketManager.receive();
+        if (historyId == -1)
+            this.historyId = Integer.parseInt(response.split("\"historyId\": \"")[1]);
 
     }
 

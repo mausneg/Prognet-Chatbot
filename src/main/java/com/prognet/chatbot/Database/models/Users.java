@@ -1,5 +1,10 @@
 package com.prognet.chatbot.Database.models;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import com.prognet.chatbot.Database.Core.DatabaseManager;
 
 public class Users {
@@ -13,9 +18,21 @@ public class Users {
         this.dbManager = DatabaseManager.getInstance();
     }
 
-    public boolean login() {
-        String query = "SELECT * FROM users WHERE username = '" + this.username + "' AND password = '" + this.password + "'";
-        return dbManager.executeQuery(query) != null;
+    public int login() {
+        String query = "SELECT user_id FROM users WHERE username = ? AND password = ?";
+        try (Connection connection = dbManager.getConnection();
+             PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, this.username);
+            stmt.setString(2, this.password);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                int userId = rs.getInt("user_id");
+                return userId;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1;
     }
 
     public boolean register() {
@@ -23,9 +40,5 @@ public class Users {
         return dbManager.executeUpdate(query) > 0;
     }
 
-    public String getId() {
-        String query = "SELECT id FROM users WHERE username = '" + this.username + "'";
-        return dbManager.executeQuery(query).toString();
-    }
     
 }

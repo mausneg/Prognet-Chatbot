@@ -7,6 +7,8 @@ package com.prognet.chatbot.View;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import javax.swing.SwingUtilities;
+
 import javax.swing.JScrollPane;
 
 import com.prognet.chatbot.Controller.ChatbotController;
@@ -226,29 +228,34 @@ public class Chatbot extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
         String message = jTextField1.getText();
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm");
-
+    
+        final LocalDateTime[] clientTime = {null};
+        final LocalDateTime[] botTime = {null};
+    
         Thread clientThread = new Thread(() -> {
-            LocalDateTime now = LocalDateTime.now();
-            String time = dtf.format(now);
-            chatbotClientsController.displayChatCardClient(message, time);
+            clientTime[0] = LocalDateTime.now();
+            String time = dtf.format(clientTime[0]);
+            SwingUtilities.invokeLater(() -> chatbotClientsController.displayChatCardClient(message, time));
         });
-
+    
         Thread botThread = new Thread(() -> {
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            LocalDateTime now2 = LocalDateTime.now();
-            String time2 = dtf.format(now2);
-            chatbotClientsController.displayChatCardBot("...", time2);
+            botTime[0] = LocalDateTime.now();
+            String time2 = dtf.format(botTime[0]);
+            SwingUtilities.invokeLater(() -> chatbotClientsController.displayChatCardBot("...", time2));
             String response = chatbotClientsController.getPrediction(message);
-            chatbotClientsController.displayChatCardBot(response, time2);
+            SwingUtilities.invokeLater(() -> chatbotClientsController.displayChatCardBot(response, time2));
+    
+            chatbotClientsController.insertChat(message, response, clientTime[0], botTime[0]);
         });
-
+    
         clientThread.start();
         botThread.start();
-
+    
         jTextField1.setText("");
     }
 
