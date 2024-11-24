@@ -4,6 +4,8 @@ import java.io.*;
 import java.net.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.time.LocalDateTime;
+
 
 import com.prognet.chatbot.Database.models.Users;
 
@@ -16,6 +18,7 @@ public class ClientHandler implements Runnable {
         this.clientSocket = socket;
         requestDispatcher = new RequestDispatcher();
         clientCount++;
+        System.out.println("[" + LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("HH:mm:ss")) + "]");
         System.out.println("Client connected: " + clientSocket.getInetAddress().getHostAddress());
         System.out.println("Client count: " + clientCount);
     }
@@ -28,16 +31,20 @@ public class ClientHandler implements Runnable {
         ) {
             String line;
             while ((line = in.readLine()) != null) {
+                System.out.println("[" + LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("HH:mm:ss")) + "]");
                 System.out.println("Received JSON: " + line);
 
                 Map<String, String> request = parseJson(line);
                 String response = requestDispatcher.dispatch(request);
                 
+                System.out.println("[" + LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("HH:mm:ss")) + "]");
                 System.out.println("Sending JSON: " + response);
                 out.println(response);
                 out.flush();
             }
             clientCount--;
+
+            System.out.println("[" + LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("HH:mm:ss")) + "]");
             System.out.println("Client disconnected: " + clientSocket.getInetAddress().getHostAddress());
             System.out.println("Client count: " + clientCount);
         } catch (IOException e) {

@@ -15,7 +15,6 @@ public class Chats {
     private LocalDateTime botTime;
 
     public Chats(int historyId, String clientMessage, String botMessage, String clientTime, String botTime) {
-        System.out.println("Data : " + historyId + " " + clientMessage + " " + botMessage + " " + clientTime + " " + botTime);
         this.dbManager = DatabaseManager.getInstance();
         this.historyId = historyId;
         this.clientMessage = clientMessage;

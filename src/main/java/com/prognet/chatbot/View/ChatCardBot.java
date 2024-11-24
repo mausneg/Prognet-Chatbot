@@ -4,21 +4,58 @@
  */
 package com.prognet.chatbot.View;
 
-import javax.swing.JScrollPane;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.*;
+import java.awt.*;
 
 /**
  *
  * @author mausneg
  */
 public class ChatCardBot extends javax.swing.JPanel {
-
+    private String message;
     /**
      * Creates new form ChatCardBot
      */
     public ChatCardBot(String message, String time) {
+        this.message = message;
         initComponents();
-        jTextArea1.setText(message);
-        jLabel7.setText(time);
+        setupMessage(message);
+    }
+    private void setupMessage(String message) {
+        List<String> lines = splitMessage(message, 70);
+        for (String line : lines) {
+            JLabel label = new JLabel(line);
+            label.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+            jPanel1.add(label);
+        }
+        jPanel1.revalidate();
+        jPanel1.repaint();
+    }
+
+    private List<String> splitMessage(String message, int maxLength) {
+        List<String> lines = new ArrayList<>();
+        String[] words = message.split(" ");
+        StringBuilder currentLine = new StringBuilder();
+
+        for (String word : words) {
+            if (currentLine.length() + word.length() + 1 > maxLength) {
+                lines.add(currentLine.toString());
+                currentLine = new StringBuilder();
+            }
+            if (currentLine.length() > 0) {
+                currentLine.append(" ");
+            }
+            currentLine.append(word);
+        }
+
+        if (currentLine.length() > 0) {
+            lines.add(currentLine.toString());
+        }
+
+        return lines;
     }
 
     /**
@@ -28,7 +65,7 @@ public class ChatCardBot extends javax.swing.JPanel {
      */
 
     public String getMessage() {
-        return jTextArea1.getText();
+        return message;
     }
 
     @SuppressWarnings("unchecked")
@@ -36,57 +73,39 @@ public class ChatCardBot extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel1 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
-        jTextArea1 = new javax.swing.JTextArea();
+        jLabel6 = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setToolTipText("");
-        setMaximumSize(new java.awt.Dimension(1000, 64));
-        setPreferredSize(new java.awt.Dimension(400, 64));
+        setMaximumSize(new java.awt.Dimension(500, 128));
+        setMinimumSize(new java.awt.Dimension(400, 64));
+        setLayout(new java.awt.CardLayout(5, 5));
+
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel1.setLayout(new javax.swing.BoxLayout(jPanel1, javax.swing.BoxLayout.Y_AXIS));
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel3.setText("Bot Admin");
+        jPanel1.add(jLabel3);
 
         jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
-        jLabel7.setText("00:00");
+        jLabel7.setText(" ");
         jLabel7.setToolTipText("");
+        jPanel1.add(jLabel7);
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jLabel7))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3)
-                            .addComponent(jTextArea1, javax.swing.GroupLayout.PREFERRED_SIZE, 359, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 29, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextArea1, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(15, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jLabel7))
-        );
+        jLabel6.setAlignmentY(0.0F);
+        jPanel1.add(jLabel6);
+
+        add(jPanel1, "card7");
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables
 }
