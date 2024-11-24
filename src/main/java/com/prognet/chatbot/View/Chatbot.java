@@ -228,16 +228,16 @@ public class Chatbot extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
         String message = jTextField1.getText();
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm");
-    
-        final LocalDateTime[] clientTime = {null};
-        final LocalDateTime[] botTime = {null};
-    
+
+        final LocalDateTime[] clientTime = { null };
+        final LocalDateTime[] botTime = { null };
+
         Thread clientThread = new Thread(() -> {
             clientTime[0] = LocalDateTime.now();
             String time = dtf.format(clientTime[0]);
             SwingUtilities.invokeLater(() -> chatbotClientsController.displayChatCardClient(message, time));
         });
-    
+
         Thread botThread = new Thread(() -> {
             try {
                 Thread.sleep(1000);
@@ -249,13 +249,13 @@ public class Chatbot extends javax.swing.JFrame {
             SwingUtilities.invokeLater(() -> chatbotClientsController.displayChatCardBot("...", time2));
             String response = chatbotClientsController.getPrediction(message);
             SwingUtilities.invokeLater(() -> chatbotClientsController.displayChatCardBot(response, time2));
-    
+
             chatbotClientsController.insertChat(message, response, clientTime[0], botTime[0]);
         });
-    
+
         clientThread.start();
         botThread.start();
-    
+
         jTextField1.setText("");
     }
 
