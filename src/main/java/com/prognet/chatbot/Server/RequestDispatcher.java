@@ -34,14 +34,16 @@ public class RequestDispatcher {
             Histories history = new Histories();
             int historyId = Integer.parseInt(request.get("history_id"));
             if (historyId == -1){
-                historyId = history.insertHistory(Integer.parseInt(request.get("userId")));
+                historyId = history.insertHistory(Integer.parseInt(request.get("user_id")));
+                System.out.println("History ID: " + historyId);
             }
             history.updateHistory(historyId);
+            System.out.println(request);
             Chats chat = new Chats(historyId, request.get("clientMessage"), request.get("botMessage"), request.get("clientTime"), request.get("botTime"));
             if (chat.insertChat()){
-                response = "{\"status\": \"success\", \"message\": \"Chat inserted successfully.\"}";
+                response = "{\"status\": \"success\", \"message\": \"Chat inserted successfully.\", \"history_id\": \"" + historyId + "\"}";
             } else {
-                response = "{\"status\": \"error\", \"message\": \"Chat insertion failed.\"}";
+                response = "{\"status\": \"error\", \"message\": \"Chat insertion failed.\", \"history_id\": \"" + historyId + "\"}";
             }
 
         }
