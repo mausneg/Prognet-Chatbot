@@ -58,6 +58,15 @@ public class RequestDispatcher {
             int historyId = Integer.parseInt(request.get("history_id"));
             ArrayList<String> clickedChat = chat.getMessages(historyId);
             response = "{\"status\": \"success\", \"message\": \"Chat retrieved successfully.\", \"clicked_chat\": \"" + clickedChat + "\"}";
+        } else if("delete_chat".equals(action)){
+            Chats chat = new Chats();
+            Histories history = new Histories();
+            int historyId = Integer.parseInt(request.get("history_id"));
+            if (chat.deleteChat(historyId) && history.deleteHistory(historyId)){
+                response = "{\"status\": \"success\", \"message\": \"Chat deleted successfully.\"}";
+            } else {
+                response = "{\"status\": \"error\", \"message\": \"Chat deletion failed.\"}";
+            }
         }
         else {
             response = "{\"status\": \"error\", \"message\": \"Unknown action.\"}";

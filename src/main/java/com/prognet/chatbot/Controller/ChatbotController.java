@@ -2,6 +2,7 @@ package com.prognet.chatbot.Controller;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 
 import com.prognet.chatbot.Client.SocketManager;
 import com.prognet.chatbot.View.ChatCardBot;
@@ -13,17 +14,50 @@ import com.prognet.chatbot.View.HistoryCard;
 public class ChatbotController {
     private Chatbot chatbotClients;
     private int userId;
+    private String username;
     private SocketManager socketManager;
     private int historyId;
     private HistoryCard clickedHistoryCard;
+    private ArrayList<HistoryCard> historyCards;
 
-    public ChatbotController(int userId){
+    public ChatbotController(int userId, String username){
         this.historyId = -1;
         this.socketManager = SocketManager.getInstance();
         this.userId = userId;
+        this.username = username;
         this.chatbotClients = new Chatbot(this);
         this.chatbotClients.setVisible(true);
-        displayHistories();
+        this.historyCards = new ArrayList<>();
+        this.getHistories();
+        this.setUsername();
+    }
+
+    public void setUsername(){
+        this.chatbotClients.setUsername(username);
+    }
+
+    public void newChat(){
+        chatbotClients.clearChatCards();
+        this.historyId = -1;
+        this.clickedHistoryCard.setBackground(clickedHistoryCard.getDefaultBackgroundColor());
+        this.clickedHistoryCard.setClicked(false);
+        this.clickedHistoryCard = null;
+    }
+
+    public void deleteChat(int historyId){
+        String message = String.format("{\"action\": \"delete_chat\", \"history_id\": \"%s\"}", historyId);
+        socketManager.send(message);
+        String response = socketManager.receive();
+
+        if (response.contains("success")) {
+            for (HistoryCard historyCard : historyCards) {
+                if (historyCard.getHistoryId() == historyId) {
+                    historyCards.remove(historyCard);
+                    break;
+                }
+            }
+            displayHistories();
+        }
     }
 
     public void setChatClicked() {
@@ -53,7 +87,7 @@ public class ChatbotController {
             displayChatCardBot(botMessage, formattedBotTime);
         }
     }
-    public void clickedHistoryCard(HistoryCard historyCard){
+    public void setClickedHistoryCard(HistoryCard historyCard){
         if (clickedHistoryCard != null) {
             clickedHistoryCard.setBackground(clickedHistoryCard.getDefaultBackgroundColor());
             clickedHistoryCard.setClicked(false);
@@ -63,8 +97,22 @@ public class ChatbotController {
         clickedHistoryCard.setClicked(true);
         this.historyId = clickedHistoryCard.getHistoryId();
     }
+
+    public void editHistoryCard() {
+        HistoryCard targetCard = null;
+        for (HistoryCard historyCard : historyCards) {
+            if (historyCard.getHistoryId() == this.historyId) {
+                targetCard = historyCard;
+                break;
+            }
+        }
+        if (targetCard != null) {
+            historyCards.remove(targetCard);
+            historyCards.add(0, targetCard);
+        }
+    }
     
-    public void displayHistories() {
+    public void getHistories() {
         String message = String.format("{\"action\": \"history\", \"userId\": \"%s\"}", this.userId);
         socketManager.send(message);
         String response = socketManager.receive();
@@ -77,14 +125,21 @@ public class ChatbotController {
         String[] historyIds = historyIdsString.split(", ");
         String[] firstMessages = firstMessagesString.split(", ");
         
-        System.out.println(historyIds.length);
         for (int i = 0; i < historyIds.length; i++) {
             int historyId = Integer.parseInt(historyIds[i]);
             String firstMessage = firstMessages[i].replaceAll("^\"|\"$", ""); // Remove surrounding quotes
             HistoryCard historyCard = new HistoryCard(historyId, firstMessage, this);
+            historyCards.add(historyCard);
+        }
+        displayHistories();
+    }
+
+    public void displayHistories(){
+        chatbotClients.clearHistoryCards();
+        for (HistoryCard historyCard : historyCards) {
             chatbotClients.addHistoryCard(historyCard);
         }
-    }
+    }    
     
     public void displayChatCardClient(String message, String time){
         ChatCardClient chatCardClient = new ChatCardClient(message, time);
@@ -110,10 +165,16 @@ public class ChatbotController {
                 this.userId, this.historyId, clientMessage, botMessage, clientTime.format(formatter), botTime.format(formatter));
         socketManager.send(message);
         String response = socketManager.receive();
-        if (historyId == -1)
+        if (historyId == -1){
             this.historyId = Integer.parseInt(response.split("\"history_id\": \"")[1].split("\"")[0]);
+            HistoryCard historyCard = new HistoryCard(this.historyId, clientMessage, this);
+            historyCards.add(0, historyCard);
+            setClickedHistoryCard(historyCard);
+        }
+        else{
+            editHistoryCard();
 
+        }
+        displayHistories();
     }
-
-
 }

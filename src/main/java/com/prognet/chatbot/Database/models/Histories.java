@@ -71,4 +71,15 @@ public class Histories {
         return historyIds;
     }
 
+    public boolean deleteHistory(int historyId) {
+        String query = "DELETE FROM histories WHERE history_id = ?";
+        try (Connection connection = dbManager.getConnection();
+             PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, historyId);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

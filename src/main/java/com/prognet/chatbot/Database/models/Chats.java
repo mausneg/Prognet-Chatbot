@@ -80,4 +80,16 @@ public class Chats {
         }
         return messages;
     }
+
+    public boolean deleteChat(int historyId) {
+        String query = "DELETE FROM chats WHERE history_id = ?";
+        try (Connection connection = dbManager.getConnection();
+             PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, historyId);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
