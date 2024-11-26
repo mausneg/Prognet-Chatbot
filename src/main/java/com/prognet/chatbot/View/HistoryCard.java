@@ -20,16 +20,19 @@ public class HistoryCard extends javax.swing.JPanel {
     private Color hoverBackgroundColor = new Color(211, 211, 211);
     private int historyId;
     private ChatbotController chatbotController;
+    private String firstMessage;
     private boolean isClicked = false;
 
     /**
      * Creates new form HistoryCard
      */
-    public HistoryCard(int historyId, ChatbotController chatbotController) {
+    public HistoryCard(int historyId, String firstMessage, ChatbotController chatbotController) {
         initComponents();
         this.historyId = historyId;
+        this.firstMessage = firstMessage;
         this.chatbotController = chatbotController;
         defaultBackgroundColor = this.getBackground();
+        setText(firstMessage);
         
         this.addMouseListener(new MouseAdapter() {
             @Override
@@ -51,13 +54,32 @@ public class HistoryCard extends javax.swing.JPanel {
                 cardClicked(); // Handle card click event
             }
         });
+
+    }
+
+    public Color getDefaultBackgroundColor() {
+        return defaultBackgroundColor;
+    }
+
+    public Color getHoverBackgroundColor() {
+        return hoverBackgroundColor;
+    }
+
+    public int getHistoryId() {
+        return historyId;
+    }
+
+    public void setClicked(boolean isClicked) {
+        this.isClicked = isClicked;
     }
 
     private void cardClicked() {
-       this.chatbotController.setHistoryId(historyId);
-       setBackground(hoverBackgroundColor);
-       isClicked = true; // Mark the card as clicked
-       setBackground(hoverBackgroundColor); // Set background permanently to hover color after click
+        chatbotController.clickedHistoryCard(this);
+        chatbotController.setChatClicked();
+    }
+
+    public void setText(String text) {
+        jLabel8.setText(text);
     }
 
     /**
@@ -75,7 +97,9 @@ public class HistoryCard extends javax.swing.JPanel {
         jButton1 = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
-        setPreferredSize(new java.awt.Dimension(64, 32));
+        setMaximumSize(new java.awt.Dimension(512, 48));
+        setMinimumSize(new java.awt.Dimension(128, 48));
+        setPreferredSize(new java.awt.Dimension(128, 48));
 
         jLabel8.setFont(new java.awt.Font("Segoe UI", 1, 10)); // NOI18N
         jLabel8.setText("Text");
@@ -96,8 +120,8 @@ public class HistoryCard extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel8)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 261, Short.MAX_VALUE)
+                .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -106,9 +130,9 @@ public class HistoryCard extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel8)
+                    .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton1))
-                .addContainerGap(41, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
