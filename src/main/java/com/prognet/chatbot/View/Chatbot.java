@@ -28,6 +28,16 @@ public class Chatbot extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }
 
+    public void setUsername(String username) {
+        this.jLabel2.setText(username);
+    }
+
+    public void clearHistoryCards() {
+        this.jPanel2.removeAll();
+        this.jPanel2.repaint();
+        this.jPanel2.revalidate();
+    }
+
     public void addHistoryCard(HistoryCard historyCard) {
         this.jPanel2.add(historyCard);
         this.jPanel2.repaint();
@@ -256,7 +266,7 @@ public class Chatbot extends javax.swing.JFrame {
     }// GEN-LAST:event_jTextField1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
+        chatbotClientsController.newChat();
     }// GEN-LAST:event_jButton2ActionPerformed
 
     /**

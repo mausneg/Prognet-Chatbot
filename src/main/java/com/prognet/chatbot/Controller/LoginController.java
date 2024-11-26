@@ -45,7 +45,7 @@ public class LoginController {
         if (response.contains("\"status\": \"success\"")) {
             this.login.showMessage("Login successful");
             int id = Integer.parseInt(response.split("\"user_id\": \"")[1].split("\"")[0]);
-            new ChatbotController(id);
+            new ChatbotController(id, username);
             this.login.dispose();
         } else {
             this.login.showMessage("Login failed");
