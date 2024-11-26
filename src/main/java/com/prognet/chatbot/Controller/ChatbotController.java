@@ -170,11 +170,13 @@ public class ChatbotController {
             HistoryCard historyCard = new HistoryCard(this.historyId, clientMessage, this);
             historyCards.add(0, historyCard);
             setClickedHistoryCard(historyCard);
+            displayHistories();
         }
         else{
-            editHistoryCard();
-
+            if (this.historyCards.get(0).getHistoryId() != this.historyId) {
+                editHistoryCard();
+                displayHistories();
         }
-        displayHistories();
+        }
     }
 }
