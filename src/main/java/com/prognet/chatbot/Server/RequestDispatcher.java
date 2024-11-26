@@ -1,9 +1,12 @@
 package com.prognet.chatbot.Server;
 
 import java.util.Map;
+import java.util.ArrayList;
+
 import com.prognet.chatbot.Database.models.Users;
 import com.prognet.chatbot.Database.models.Histories;
 import com.prognet.chatbot.Database.models.Chats;
+
 
 public class RequestDispatcher {
 
@@ -37,15 +40,25 @@ public class RequestDispatcher {
                 historyId = history.insertHistory(Integer.parseInt(request.get("user_id")));
             }
             history.updateHistory(historyId);
-            Chats chat = new Chats(historyId, request.get("clientMessage"), request.get("botMessage"), request.get("clientTime"), request.get("botTime"));
-            if (chat.insertChat()){
+            Chats chat = new Chats();
+            if (chat.insertChat(historyId, request.get("clientMessage"), request.get("botMessage"), request.get("clientTime"), request.get("botTime"))){
                 response = "{\"status\": \"success\", \"message\": \"Chat inserted successfully.\", \"history_id\": \"" + historyId + "\"}";
             } else {
                 response = "{\"status\": \"error\", \"message\": \"Chat insertion failed.\", \"history_id\": \"" + historyId + "\"}";
             }
-
+        } else if("history".equals(action)){
+            Histories history = new Histories();
+            Chats chat = new Chats();
+            int userId = Integer.parseInt(request.get("userId"));
+            ArrayList<Integer> historyIds = history.getHistoryIds(userId);
+            ArrayList<String> firstMessages = chat.getFirstMessages(historyIds);
+            response = "{\"status\": \"success\", \"message\": \"Histories retrieved successfully.\", \"history_ids\": \"" + historyIds + "\", \"first_messages\": \"" + firstMessages + "\"}";
+        } else if("clicked_chat".equals(action)){
+            Chats chat = new Chats();
+            int historyId = Integer.parseInt(request.get("history_id"));
+            ArrayList<String> clickedChat = chat.getMessages(historyId);
+            response = "{\"status\": \"success\", \"message\": \"Chat retrieved successfully.\", \"clicked_chat\": \"" + clickedChat + "\"}";
         }
-        
         else {
             response = "{\"status\": \"error\", \"message\": \"Unknown action.\"}";
         }

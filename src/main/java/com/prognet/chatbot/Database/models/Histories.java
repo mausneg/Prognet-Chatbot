@@ -2,6 +2,8 @@ package com.prognet.chatbot.Database.models;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.sql.*;
 import com.prognet.chatbot.Database.Core.DatabaseManager;
 
@@ -53,5 +55,20 @@ public class Histories {
         }
     }
 
+    public ArrayList<Integer> getHistoryIds(int userId) {
+        ArrayList<Integer> historyIds = new ArrayList<>();
+        String query = "SELECT history_id FROM histories WHERE user_id = ? ORDER BY last_updated DESC";
+        try (Connection connection = dbManager.getConnection();
+             PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, userId);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                historyIds.add(rs.getInt("history_id"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return historyIds;
+    }
 
 }
