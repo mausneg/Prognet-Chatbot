@@ -43,23 +43,30 @@ public class ChatbotController {
         this.clickedHistoryCard.setClicked(false);
         this.clickedHistoryCard = null;
     }
-
-    public void deleteChat(int historyId){
+    public void deleteChat(int historyId) {
         String message = String.format("{\"action\": \"delete_chat\", \"history_id\": \"%s\"}", historyId);
         socketManager.send(message);
         String response = socketManager.receive();
 
         if (response.contains("success")) {
+            HistoryCard cardToRemove = null;
             for (HistoryCard historyCard : historyCards) {
                 if (historyCard.getHistoryId() == historyId) {
-                    historyCards.remove(historyCard);
+                    cardToRemove = historyCard;
                     break;
                 }
             }
-            displayHistories();
+            if (cardToRemove != null) {
+                historyCards.remove(cardToRemove);
+                if (clickedHistoryCard != null && clickedHistoryCard.getHistoryId() == historyId) {
+                    chatbotClients.clearChatCards();
+                    clickedHistoryCard = null;
+                    this.historyId = -1;
+                }
+                displayHistories();
+            }
         }
     }
-
     public void setChatClicked() {
         DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
         DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("HH:mm");
@@ -122,9 +129,13 @@ public class ChatbotController {
         String firstMessagesString = response.split("\", \"first_messages\": \"")[1].split("\"}")[0];
         firstMessagesString = firstMessagesString.replace("[", "").replace("]", "");
         
+        if (historyIdsString.equals("")) {
+            return;
+        }
+
         String[] historyIds = historyIdsString.split(", ");
         String[] firstMessages = firstMessagesString.split(", ");
-        
+
         for (int i = 0; i < historyIds.length; i++) {
             int historyId = Integer.parseInt(historyIds[i]);
             String firstMessage = firstMessages[i].replaceAll("^\"|\"$", ""); // Remove surrounding quotes
