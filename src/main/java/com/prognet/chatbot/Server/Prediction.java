@@ -1,5 +1,6 @@
 package com.prognet.chatbot.Server;
 
+import java.io.BufferedOutputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -18,10 +19,11 @@ public class Prediction {
             con.setRequestProperty("Content-Type", "application/json");
 
             con.setDoOutput(true);
-            OutputStream os = con.getOutputStream();
-            os.write(payload.getBytes());
-            os.flush();
-            os.close();
+            try (BufferedOutputStream bos = new BufferedOutputStream(con.getOutputStream())) {
+                bos.write(payload.getBytes());
+                bos.flush();
+            }
+
             int responseCode = con.getResponseCode();
             System.out.println("Status Code: " + responseCode);
 
